@@ -3,7 +3,7 @@ import requests
 import threading
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-
+import threading
 # ================= CONFIG =================
 TOKEN = "8569688371:AAGb6iw0DAR_t3wV-GcVZvIb04Yh8QoxiV4"
 CHANNEL_ID = "-1003980807358"
@@ -17,6 +17,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("🔴 LIVE ALERT TEST", callback_data="live_test")]
     ]
+
 
     await update.message.reply_text(
         "🔥 T1FXTEAM CONTROL PANEL 🔥\nSystem ACTIVE",
@@ -78,3 +79,14 @@ app.add_handler(CallbackQueryHandler(button_handler))
 threading.Thread(target=live_watcher, args=(app,), daemon=True).start()
 
 app.run_polling()
+app = ApplicationBuilder().token(TOKEN).build()
+
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("live", live))
+app.add_handler(CallbackQueryHandler(button_handler))
+
+print("BOT STARTING...")
+
+threading.Thread(target=live_watcher, daemon=True).start()
+
+app.run_polling(drop_pending_updates=True)

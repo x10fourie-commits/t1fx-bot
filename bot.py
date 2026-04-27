@@ -5,8 +5,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # ================= CONFIG =================
-TOKEN = "8569688371:AAEIOuOVwJLz8Px4GlIBTP3s7esV7PwYm5c"
-CHAT_ID = "-1003980807358"
+TOKEN = "8569688371:AAGb6iw0DAR_t3wV-GcVZvIb04Yh8QoxiV4"
+CHANNEL_ID = "-1003980807358"
 YOUTUBE_CHANNEL_ID = "UC71kfIKc7B0WoKFOP9xkkVg"
 
 last_video_id = None
@@ -15,11 +15,11 @@ last_video_id = None
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("🔴 TEST LIVE ALERT", callback_data="test")]
+        [InlineKeyboardButton("🔴 LIVE ALERT TEST", callback_data="live_test")]
     ]
 
     await update.message.reply_text(
-        "🔥 BOT IS ONLINE",
+        "🔥 T1FXTEAM CONTROL PANEL 🔥\nSystem ACTIVE",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
@@ -28,19 +28,21 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    if query.data == "test":
+    if query.data == "live_test":
         await context.bot.send_message(
-            chat_id=CHAT_ID,
-            text="🔴 TEST ALERT WORKING"
+            chat_id=CHANNEL_ID,
+            text="🔴 TEST LIVE ALERT SENT"
         )
 
 # ================= YOUTUBE WATCHER =================
 
-def youtube_watcher(app):
+def live_watcher(app):
     global last_video_id
 
     while True:
         try:
+            print("Checking YouTube...")
+
             url = f"https://www.youtube.com/feeds/videos.xml?channel_id={YOUTUBE_CHANNEL_ID}"
             r = requests.get(url, timeout=10)
 
@@ -53,8 +55,8 @@ def youtube_watcher(app):
 
                     app.create_task(
                         app.bot.send_message(
-                            chat_id=CHAT_ID,
-                            text=f"🔴 NEW VIDEO LIVE!\n{link}"
+                            chat_id=CHANNEL_ID,
+                            text=f"🔴 AUTO LIVE DETECTED!\n{link}"
                         )
                     )
 
@@ -70,8 +72,9 @@ def youtube_watcher(app):
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("live", start))
 app.add_handler(CallbackQueryHandler(button_handler))
 
-threading.Thread(target=youtube_watcher, args=(app,), daemon=True).start()
+threading.Thread(target=live_watcher, args=(app,), daemon=True).start()
 
 app.run_polling()

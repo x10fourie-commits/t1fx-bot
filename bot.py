@@ -1,25 +1,26 @@
 import time
 import threading
 import requests
+
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # ================= CONFIG =================
 TOKEN = "8569688371:AAEwSB1zHPPmu1Y5cITPfTXivBOukx1eXV4"
-CHANNEL_ID = "-1003980807358"
+CHANNEL_ID = -1003980807358  # MUST be int, not string
 YOUTUBE_CHANNEL_ID = "UC71kfIKc7B0WoKFOP9xkkVg"
 
 last_video_id = None
 
-# ================= START COMMAND =================
+# ================= START =================
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("🔴 TEST LIVE ALERT", callback_data="test_live")]
+        [InlineKeyboardButton("🔴 TEST ALERT", callback_data="test")]
     ]
 
     await update.message.reply_text(
-        "🔥 BOT IS ACTIVE 🔥\n\nEverything is running.",
+        "🔥 BOT IS ONLINE 🔥",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
@@ -29,13 +30,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    if query.data == "test_live":
+    if query.data == "test":
         await context.bot.send_message(
             chat_id=CHANNEL_ID,
-            text="🔴 TEST LIVE ALERT WORKING"
+            text="🧪 TEST ALERT WORKING"
         )
 
-# ================= MANUAL LIVE COMMAND =================
+# ================= MANUAL LIVE =================
 
 async def live(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
@@ -102,9 +103,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    async def getid(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        f"-1003980807358: {update.effective_chat.id}"
-    )app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("live", live))
-app.add_handler(CommandHandler("id", getid))

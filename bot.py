@@ -102,3 +102,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+    async def getid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        f"-1003980807358: {update.effective_chat.id}"
+    )app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("live", live))
+app.add_handler(CommandHandler("id", getid))
